@@ -1,0 +1,10 @@
+[requires]
+premake_generator/master@enhex/testing
+boost_beast/1.66.0@bincrafters/stable
+high_level_asio/master@enhex/stable
+
+[options]
+high_level_asio:asio_standalone = False
+
+[generators]
+Premake
