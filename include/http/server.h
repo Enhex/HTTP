@@ -22,8 +22,7 @@ using tcp = asio::ip::tcp;
 namespace beast = boost::beast;
 
 // Return a reasonable mime type based on the extension of a file.
-boost::beast::string_view
-mime_type(boost::beast::string_view path)
+inline boost::beast::string_view mime_type(boost::beast::string_view path)
 {
 	using boost::beast::iequals;
 	auto const ext = [&path]
@@ -59,10 +58,7 @@ mime_type(boost::beast::string_view path)
 
 // Append an HTTP rel-path to a local filesystem path.
 // The returned path is normalized for the platform.
-std::string
-path_cat(
-	boost::beast::string_view base,
-	boost::beast::string_view path)
+inline std::string path_cat(boost::beast::string_view base, boost::beast::string_view path)
 {
 	if (base.empty())
 		return path.to_string();
@@ -91,8 +87,7 @@ path_cat(
 template<
 	class Body, class Allocator,
 	class Send>
-	void
-	handle_request(
+void handle_request(
 		boost::beast::string_view doc_root,
 		beast::http::request<Body, beast::http::basic_fields<Allocator>>&& req,
 		Send&& send)
@@ -191,8 +186,7 @@ template<
 //------------------------------------------------------------------------------
 
 // Report a failure
-void
-fail(boost::system::error_code ec, char const* what)
+inline void fail(boost::system::error_code ec, char const* what)
 {
 	std::cerr << what << ": " << ec.message() << "\n";
 }
@@ -320,7 +314,7 @@ public:
 	void do_close()
 	{
 		// Send a TCP shutdown
-		std::error_code ec;
+		boost::system::error_code ec;
 		socket_.shutdown(tcp::socket::shutdown_send, ec);
 
 		// At this point the connection is closed gracefully
