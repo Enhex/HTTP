@@ -32,4 +32,6 @@ function add_test(name)
 			optimize "On"
 end
 
-add_test("server")
+add_test("file_server")
+project("file_server")
+	debugargs("4000 E:/asio/HTTP/tests 1")

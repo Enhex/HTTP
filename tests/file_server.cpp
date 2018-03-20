@@ -1,4 +1,4 @@
-#include <http/server.h>
+#include <http/file_server.h>
 #include <hla/utility.h>
 
 int main(int argc, char* argv[])
@@ -21,12 +21,12 @@ int main(int argc, char* argv[])
 	boost::asio::io_context context;// { threads_count };
 
 	// Create and launch a listening port
-	listener server(context, port, doc_root);
+	http::file_server server(context, port, doc_root);
 	server.run();
 
 	// Run the I/O service on the requested number of threads
-	auto threads = thread_pool_run(context, threads_count);
-	join_threads(threads);
+	auto threads = hla::thread_pool_run(context, threads_count);
+	hla::join_threads(threads);
 
 	return EXIT_SUCCESS;
 }
