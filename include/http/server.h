@@ -83,6 +83,26 @@ namespace http
 			request_handler(shared_from_this(), std::move(request));
 		}
 
+		template<class Body, class Fields>
+		void respond(beast::http::response<Body, Fields>&& response)
+		{
+			// The lifetime of the message has to extend
+			// for the duration of the async operation so
+			// we use a shared_ptr to manage it.
+			auto response_ptr = std::make_shared<std::remove_reference_t<decltype(response)>>(std::move(response));
+
+			// Write the response
+			beast::http::async_write(
+				socket,
+				*response_ptr,
+				asio::bind_executor(
+					strand,
+					[self = shared_from_this(), response_ptr](boost::system::error_code ec, std::size_t bytes_transferred) {
+						self->on_write(ec, bytes_transferred, response_ptr->need_eof());
+					})
+			);
+		}
+
 		// call after writing a response
 		void on_write(boost::system::error_code ec, std::size_t /*bytes_transferred*/, bool close)
 		{
